@@ -1,4 +1,4 @@
-# React App *gh-pages* Host URL:
+# Lap Config *gh-pages* Host URL:
 #### https://thinkful-ei-rabbit.github.io/laptop_customizer_derek
 
 ---
