@@ -1,68 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import BookmarkApp from './BookmarkApp/BookmarkApp';
-import AddBookmark from './BookmarkApp/AddBookmark';
+import React, { Component } from 'react'
+import SearchBar from './component/SearchBar';
+import BookList from './component/BookList';
 
-const BASE_URL = 'https://tf-ed-bookmarks-api.herokuapp.com/v3/bookmarks';
-const API_KEY = '$2a$10$QcxTLR1746BBvUIluG2MKeEpB23OEI2N55r.cU0TONCct2Mnv/jD2';
+const API_KEY = 'AIzaSyDJ8qyeqOh_fasxk_lyIe1dxS0qMIIgLsc'
+const BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 
-const App = () => {
-  useEffect(() => {
-    console.log('Page Reloaded'); // this is bad!
-  }, [])
+export default class App extends Component {
+  state = {
+    books: [],
+    filters: {
+      search: 'search terms',
+      printType: 'all',
+      bookType: 'No Filter'
+    }
+  }
 
-  // setting state... with Hooks!
-  const [bookmarks, setBookmarks] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [error, setError] = useState(null);
+  componentDidMount() {
+    const search = this.state.filters.search.replace(/ /g, '+');
+    const printType = this.state.filters.printType;
+    const bookType =
+      this.state.filters.bookType === 'No Filter'
+        ? ''
+        : '&filter=' + this.state.filters.bookType;
 
-  // componentDidMount() Hook
-  useEffect(() => {
-    // prevent call when addForm is invoked/true
-    if (showAddForm) return;
-    console.log('Mounting . . .');
+    fetch(`${BASE_URL}?q=${search}
+      &printType=${printType}${bookType}
+      &key=${API_KEY}`)
+      .then(res => {})
+      .then(data => {})
+      .catch(err => {});
+  }
 
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    };
+  handleSearch(formData) {
+    const search = // formData logic
+    const printType = // formData logic
+    const bookType = // formData logic
 
-    fetch(BASE_URL, options)
-      .then(res => {
-        console.log('About to check for errors');
-        if (!res.ok) {
-          console.log("An error did occur, let's throw an error.");
-          throw new Error('Something went wrong');
-        }
-        return res.json();
-      })
-      .then(data => {
-        setBookmarks(data);
-      })
-      .catch(err => {
-        setError(err.message);
-      });
-  }, [showAddForm]); // listens for change in this state
+    this.setState({
 
-  const toggleAddForm = event => {
-    console.log('toggling form');
-    setShowAddForm(true);
-  };
+    })
+  }
 
-  const addBookmark = bookmark => {
-    setBookmarks([...bookmarks, bookmark]);
-    setShowAddForm(false);
-  };
-
-  const page = showAddForm ? (
-    <AddBookmark showForm={toggleAddForm} handleAdd={addBookmark} />
-  ) : (
-    <BookmarkApp bookmarks={bookmarks} showForm={toggleAddForm} />
-  );
-
-  return <div className="App">{page}</div>;
-};
-
-export default App;
+  render() {
+    return (
+      <main className="main-app">
+        <SearchBar searchSubmit={this.handleSearch}/>
+        <BookList books={this.state.books}/>
+      </main>
+    )
+  }
+}
