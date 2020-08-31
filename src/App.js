@@ -12,10 +12,11 @@ export default class App extends Component {
       search: 'search terms',
       printType: 'all',
       bookType: 'No Filter'
-    }
+    },
+    expanded: ''
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
@@ -23,23 +24,47 @@ export default class App extends Component {
         ? ''
         : '&filter=' + this.state.filters.bookType;
 
-    fetch(`${BASE_URL}?q=${search}
-      &printType=${printType}${bookType}
-      &key=${API_KEY}`)
-      .then(res => {})
-      .then(data => {})
-      .catch(err => {});
+    fetch(`${BASE_URL}?q=${search}&printType=${printType}${bookType}&key=${API_KEY}`)
+      .then(res => {
+        if (!res.ok) {
+          console.log('BOOM!');
+          throw new Error('API failed')
+        }
+        return res.json()
+      })
+      .then(data => {
+        // console.log(data.items);
+        this.setState({
+          books: data.items
+        })
+      })
+      .catch(err => {
+        alert('Bad API Fetch', err.message)
+      });
   }
 
-  // handleSearch(formData) {
-  //   const search = // formData logic
-  //   const printType = // formData logic
-  //   const bookType = // formData logic
+  handleSearch = (e, formData) => {
+    e.preventDefault();
+    console.log('Submit');
+    console.log(formData);
+    const search = formData.search
+    const printType = formData.printType
+    const bookType = formData.bookType
 
-  //   this.setState({
+    this.setState({
+      filters: {
+        search,
+        printType,
+        bookType
+      },
+    })
+  }
 
-  //   })
-  // }
+  toggleExpandedView = (book) => {
+    this.state.expanded === book
+      ? this.setState({ expanded: '' })
+      : this.setState({ expanded: book })
+  }
 
   render() {
     return (
@@ -48,7 +73,11 @@ export default class App extends Component {
           <h1>Google Book Search</h1>
           </header>
         <SearchBar searchSubmit={this.handleSearch}/>
-        <BookList books={this.state.books}/>
+        <BookList
+          books={this.state.books}
+          toggleExpand={this.toggleExpandedView.bind(this)}
+          expanded={this.state.expanded}
+        />
       </main>
     )
   }
