@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import SearchBar from './component/SearchBar';
-import BookList from './component/BookList';
+import SearchBar from './components/SearchBar';
+import BookList from './components/BookList';
 
 const API_KEY = 'AIzaSyDJ8qyeqOh_fasxk_lyIe1dxS0qMIIgLsc'
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
@@ -31,19 +31,22 @@ export default class App extends Component {
       .catch(err => {});
   }
 
-  handleSearch(formData) {
-    const search = // formData logic
-    const printType = // formData logic
-    const bookType = // formData logic
+  // handleSearch(formData) {
+  //   const search = // formData logic
+  //   const printType = // formData logic
+  //   const bookType = // formData logic
 
-    this.setState({
+  //   this.setState({
 
-    })
-  }
+  //   })
+  // }
 
   render() {
     return (
       <main className="main-app">
+        <header>
+          <h1>Google Book Search</h1>
+          </header>
         <SearchBar searchSubmit={this.handleSearch}/>
         <BookList books={this.state.books}/>
       </main>
