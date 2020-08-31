@@ -5,7 +5,8 @@ const Book = ({ book }) => {
 
 
   return (
-    <div>
+    <div className='book'>
+      {book}
       {/* {bookTitle}
       {bookInfo} */}
     </div>
