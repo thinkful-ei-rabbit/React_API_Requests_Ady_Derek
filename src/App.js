@@ -15,7 +15,7 @@ export default class App extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
