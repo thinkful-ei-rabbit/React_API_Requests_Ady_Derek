@@ -13,10 +13,12 @@ export default class App extends Component {
       printType: '',
       bookType: ''
     },
-    expanded: ''
+    expanded: '',
+    apiFetch: false
   }
 
-  APIFetch() {
+  componentDidUpdate() {
+    if (this.state.apiFetch === false) return
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
@@ -35,10 +37,14 @@ export default class App extends Component {
       .then(data => {
         // console.log(data.items);
         this.setState({
-          books: data.items
+          books: data.items,
+          apiFetch: false
         })
       })
       .catch(err => {
+        this.setState({
+          apiFetch: false
+        })
         alert('Bad API Fetch', err.message)
       });
   }
@@ -57,10 +63,9 @@ export default class App extends Component {
         printType,
         bookType
       },
-      expanded: ''
+      expanded: '',
+      apiFetch: (this.state.apiFetch + 1)
     })
-    // state needs time to update before fetch
-    setTimeout(() => this.APIFetch(), 0)
   }
 
   toggleExpandedView = (book) => {
