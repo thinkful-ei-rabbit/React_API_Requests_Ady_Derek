@@ -9,18 +9,18 @@ export default class App extends Component {
   state = {
     books: [],
     filters: {
-      search: 'search terms',
-      printType: 'all',
-      bookType: 'No Filter'
+      search: '',
+      printType: '',
+      bookType: ''
     },
     expanded: ''
   }
 
-  componentDidMount() {
+  APIFetch() {
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
-      this.state.filters.bookType === 'No Filter'
+      this.state.filters.bookType === 'no filter'
         ? ''
         : '&filter=' + this.state.filters.bookType;
 
@@ -57,7 +57,10 @@ export default class App extends Component {
         printType,
         bookType
       },
+      expanded: ''
     })
+    // state needs time to update before fetch
+    setTimeout(() => this.APIFetch(), 0)
   }
 
   toggleExpandedView = (book) => {
