@@ -9,13 +9,25 @@ export default class App extends Component {
   state = {
     books: [],
     filters: {
-      search: 'search terms',
-      printType: 'all',
-      bookType: 'no filter'
-    }
+<<<<<<< HEAD
+      search: '',
+      printType: '',
+      bookType: ''
+    },
+    expanded: '',
+    apiFetch: false
+=======
+      search: '',
+      printType: '',
+      bookType: ''
+    },
+    expanded: '',
+    apiFetch: false
+>>>>>>> 7754afcd3d982fa5e48a6eab0b66147d7c8b9081
   }
 
   componentDidUpdate() {
+    if (this.state.apiFetch === false) return
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
@@ -23,28 +35,77 @@ export default class App extends Component {
         ? ''
         : '&filter=' + this.state.filters.bookType;
 
-    fetch(`${BASE_URL}?q=${search}
-      &printType=${printType}${bookType}
-      &key=${API_KEY}`)
-      .then(res => { 
-        if(!res.ok){
-          console.log('BOOM');
-          throw new Error('API Failure')
+<<<<<<< HEAD
+fetch(`${BASE_URL}?q=${search}&printType=${printType}${bookType}&key=${API_KEY}`)
+.then(res => {
+  if (!res.ok) {
+    console.log('BOOM!');
+    throw new Error('API failed')
+  }
+  return res.json()
+})
+.then(data => {
+  // console.log(data.items);
+  this.setState({
+    books: data.items,
+    apiFetch: false
+  })
+})
+.catch(err => {
+  this.setState({
+    apiFetch: false
+  })
+  alert('Bad API Fetch', err.message)
+});
+=======
+    fetch(`${BASE_URL}?q=${search}&printType=${printType}${bookType}&key=${API_KEY}`)
+      .then(res => {
+        if (!res.ok) {
+          console.log('BOOM!');
+          throw new Error('API failed')
         }
-       })
-      .then(data => {})
-      .catch(err => {});
+        return res.json()
+      })
+      .then(data => {
+        // console.log(data.items);
+        this.setState({
+          books: data.items,
+          apiFetch: false
+        })
+      })
+      .catch(err => {
+        this.setState({
+          apiFetch: false
+        })
+        alert('Bad API Fetch', err.message)
+      });
+>>>>>>> 7754afcd3d982fa5e48a6eab0b66147d7c8b9081
   }
 
-  // handleSearch(formData) {
-  //   const search = // formData logic
-  //   const printType = // formData logic
-  //   const bookType = // formData logic
+  handleSearch = (e, formData) => {
+    e.preventDefault();
+    console.log('Submit');
+    console.log(formData);
+    const search = formData.search
+    const printType = formData.printType
+    const bookType = formData.bookType
 
-  //   this.setState({
+    this.setState({
+      filters: {
+        search,
+        printType,
+        bookType
+      },
+      expanded: '',
+      apiFetch: (this.state.apiFetch + 1)
+    })
+  }
 
-  //   })
-  // }
+  toggleExpandedView = (book) => {
+    this.state.expanded === book
+      ? this.setState({ expanded: '' })
+      : this.setState({ expanded: book })
+  }
 
   render() {
     return (
@@ -53,7 +114,11 @@ export default class App extends Component {
           <h1>Google Book Search</h1>
           </header>
         <SearchBar searchSubmit={this.handleSearch}/>
-        <BookList books={this.state.books}/>
+        <BookList
+          books={this.state.books}
+          toggleExpand={this.toggleExpandedView.bind(this)}
+          expanded={this.state.expanded}
+        />
       </main>
     )
   }
