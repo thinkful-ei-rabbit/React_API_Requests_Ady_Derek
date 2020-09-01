@@ -11,7 +11,7 @@ export default class App extends Component {
     filters: {
       search: 'search terms',
       printType: 'all',
-      bookType: 'No Filter'
+      bookType: 'no filter'
     }
   }
 
@@ -19,14 +19,19 @@ export default class App extends Component {
     const search = this.state.filters.search.replace(/ /g, '+');
     const printType = this.state.filters.printType;
     const bookType =
-      this.state.filters.bookType === 'No Filter'
+      this.state.filters.bookType === 'no filter'
         ? ''
         : '&filter=' + this.state.filters.bookType;
 
     fetch(`${BASE_URL}?q=${search}
       &printType=${printType}${bookType}
       &key=${API_KEY}`)
-      .then(res => {})
+      .then(res => { 
+        if(!res.ok){
+          console.log('BOOM');
+          throw new Error('API Failure')
+        }
+       })
       .then(data => {})
       .catch(err => {});
   }
